@@ -1,28 +1,69 @@
 #!/usr/bin/env python
 
 from datetime import date, datetime
-from tvrage import quickinfo
-from tvrage import feeds
+#from tvrage import quickinfo
 from tvrage import api
 
 shows = {
-            'Homeland': 'homeland 2011',
-            'Sons of Anarchy': 'sons of anarchy 2011',
-            'Bored to Death': 'bored to death 2011',
-            'Revenge': 'revenge 2011',
-            'Hell on Wheels': 'hell on wheels 2011',
-            'Star Wars: The Clone Wars': 'star wars the clone wars 2011',
-            'The Walking Dead': 'the walking dead 2011',
-            'Boardwalk Empire': 'boardwalk empire 2011',
-            'South Park': 'south park 2011',
-            'Parks and Recreation': 'parks and recreation 2011',
-            'The Office': 'the office 2011',
-            'Modern Family': 'modern family 2011',
-            'Supernatural': 'supernatural 2011',
-            'The Vampire Diaries': 'vampire diaries 2011'
+            'Homeland': {
+                'show': 'homeland 2011',
+                'last_checked': date(2011, 12, 19)
+            },
+            'Sons of Anarchy': {
+                'show': 'sons of anarchy 2011',
+                'last_checked': date(2011, 12, 19)  
+            },
+            'Bored to Death': {
+                'show': 'bored to death 2011',
+                'last_checked': date(2011, 12, 19)
+            },
+            'Revenge': {
+                'show': 'revenge 2011',
+                'last_checked': date(2011, 12, 19)
+            },
+            'Hell on Wheels': {
+                'show': 'hell on wheels 2011',
+                'last_checked': date(2011, 12, 19)
+            },
+            'Star Wars: The Clone Wars': {
+                'show': 'star wars the clone wars 2011',
+                'last_checked': date(2011, 12, 19)
+            },
+            'The Walking Dead': {
+                'show': 'the walking dead 2011',
+                'last_checked': date(2011, 12, 19)
+            },
+            'Boardwalk Empire': {
+                'show': 'boardwalk empire 2011',
+                'last_checked': date(2011, 12, 19)
+            },
+            'South Park': {
+                'show': 'south park 2011',
+                'last_checked': date(2011, 12, 19)
+            },
+            'Parks and Recreation': {
+                'show': 'parks and recreation 2011',
+                'last_checked': date(2011, 12, 19)
+            },
+            'The Office': {
+                'show': 'the office 2011',
+                'last_checked': date(2011, 12, 19)
+            },
+            'Modern Family': {
+                'show': 'modern family 2011',
+                'last_checked': date(2011, 12, 19)
+            },
+            'Supernatural': {
+                'show': 'supernatural 2011',
+                'last_checked': date(2011, 12, 19)
+            },
+            'The Vampire Diaries': {
+                'show': 'vampire diaries 2011',
+                'last_checked': date(2011, 12, 19)
+            }
         }
 
-today = date.today()
+# today = date.today()
 
 # for k,v in shows.iteritems():
 #     qi = quickinfo.fetch(v)
@@ -39,9 +80,8 @@ today = date.today()
 #         print "\tNext Episode: None Available"
 
 for k,v in shows.iteritems():
-    print k, " "
-    try:
-        show = api.Show(v).next_episode
-        print show.airdate
-    except:
-        print "none."
+    print k
+    show = api.Show(v['show'])
+    ep = show.latest_episode
+    if v['last_checked'] <= ep.airdate:
+        print "\t%s x %s: %s" % (ep.season, ep.number, ep.link)
