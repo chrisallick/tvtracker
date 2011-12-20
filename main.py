@@ -6,6 +6,8 @@ import logging
 
 import pymongo
 
+from tracker import TVTracker
+
 import tornado.escape
 import tornado.httpserver
 import tornado.ioloop
@@ -37,9 +39,9 @@ class Application(tornado.web.Application):
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
-        # c = pymongo.Connection('localhost')
-        # db = c.shows
-        # shows = list()
+        c = pymongo.Connection('localhost')
+        db = c.shows
+        shows = list()
         # for a in db.shows.find().limit(10):
         #     shows.append( a )
 
