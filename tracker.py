@@ -2,6 +2,8 @@
 
 from datetime import date, datetime
 from tvrage import quickinfo
+from tvrage import feeds
+from tvrage import api
 
 shows = {
             'Homeland': 'homeland 2011',
@@ -22,16 +24,24 @@ shows = {
 
 today = date.today()
 
+# for k,v in shows.iteritems():
+#     qi = quickinfo.fetch(v)
+#     print "%s:" % k
+#     if 'Next Episode' in qi:
+#         later = datetime.strptime( qi['Next Episode'][2], "%b/%d/%Y").date()
+#         days = (later - today).days
+#         print "\tNext Episode: %s days" % days
+#     elif 'Latest Episode' in qi:
+#         earlier = datetime.strptime( qi['Latest Episode'][2], "%b/%d/%Y").date()
+#         days = (today - earlier).days
+#         print "\tLast Episode: %s day(s) ago" % days
+#     else:
+#         print "\tNext Episode: None Available"
+
 for k,v in shows.iteritems():
-    qi = quickinfo.fetch(v)
-    print "%s:" % k
-    if 'Next Episode' in qi:
-        later = datetime.strptime( qi['Next Episode'][2], "%b/%d/%Y").date()
-        days = (later - today).days
-        print "\tNext Episode: %s days" % days
-    elif 'Latest Episode' in qi:
-        earlier = datetime.strptime( qi['Latest Episode'][2], "%b/%d/%Y").date()
-        days = (today - earlier).days
-        print "\tLast Episode: %s day(s) ago" % days
-    else:
-        print "\tNext Episode: None Available"
+    print k, " "
+    try:
+        show = api.Show(v).next_episode
+        print show.airdate
+    except:
+        print "none."
