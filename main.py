@@ -25,7 +25,9 @@ define("port", default=8888, help="run on the given port", type=int)
 class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
-            (r"/", MainHandler)
+            (r"/", MainHandler),
+            (r"/search", SearchHandler),
+            (r"/add", AddHandler)
         ]
         settings = dict(
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
@@ -39,13 +41,35 @@ class Application(tornado.web.Application):
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
-        c = pymongo.Connection('localhost')
-        db = c.shows
-        shows = list()
-        # for a in db.shows.find().limit(10):
-        #     shows.append( a )
+        self.render( "index.html" )
 
-        self.render( "index.html", shows=shows )
+class AddHandler(tornado.web.RequestHandler):
+    def post(self):
+        show = self.get_argument( "show", None )
+        if show:
+            c = pymongo.Connection('localhost')
+            db = c.shows
+            shows = db.shows
+
+            tvt = TVTracker()
+            data = tvt.create(show)
+
+            old = shows.find_one({'title':data['title']})
+            if not old:
+                shows.insert( data )
+                self.write(json.dumps({'msg':'success'}))
+            else:
+                self.write(json.dumps({'msg':'error'}))
+
+class SearchHandler(tornado.web.RequestHandler):
+    def get(self):
+        query = self.get_argument( "query", None )
+
+        if query:
+            tvt = TVTracker()
+            self.write( json.dumps(tvt.search(query)) )
+        else:
+            self.render( "search.html" )
 
 
 ##########   /*     */   ##########

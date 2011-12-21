@@ -3,7 +3,7 @@
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8">
 		
-		<title>TV Tracker</title>
+		<title>Search and Add Shows</title>
 
 		<link rel="stylesheet" type="text/css" href="/static/css/main.css" />
 		<link rel="stylesheet" type="text/css" href="/static/css/search.css" />
@@ -16,19 +16,15 @@
 	<body>
 
 		<div id="wrapper">
-
-			<div id="search">
-				<form id="search-show">
-					<input id="query" type="text" value="enter query" />
-					<a id="submit" href="#">submit query</a>
-					<div id="result">
-						<h2 id="title"></h2>
-						<a id="link" href="#" target="_blank" ></a>
-					</div>
-				</form>
-				<img id="loading-gif" src="/static/img/loading.gif" />
+			<form id="custom-query">
+				<input id="query" type="text" value="enter query" />
+				<a id="submit" href="#">submit query</a>
+			</form>
+			<img id="loading-gif" src="/static/img/loading.gif" />
+			<div id="result">
+				<h2 id="title"></h2>
+				<a id="link" href="#" target="_blank" ></a>
 			</div>
-
 		</div>
 
 	</body>
