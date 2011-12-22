@@ -33,7 +33,7 @@ shows = {
 account = {}
 
 #search: query, category, maxresults, username, apikey
-#http://api.nzbmatrix.com/v1.1/search.php?search=revenge+s01e10+720p+hdtv&catid=41&num=1&username=35dodworth&apikey=81193ffd00882a0a4556d2b27ae81006
+#http://api.nzbmatrix.com/v1.1/search.php?search=revenge+s01e10+720p+hdtv&catid=41&num=1&username={{name}}&apikey={{apikey}}
 base_url = "http://api.nzbmatrix.com/v1.1/search.php?catid=41&num=1&search="
 #download link: nzbid, username, apikey
 base_download_url = "http://api.nzbmatrix.com/v1.1/download.php?id="
