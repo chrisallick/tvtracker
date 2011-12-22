@@ -28,7 +28,20 @@
 				</form>
 				<img id="loading-gif" src="/static/img/loading.gif" />
 			</div>
-
+			<div id="shows">
+				<div class="show">
+					{% for k,v in shows.items() %}
+						<h2 class="title">{{ v['title'] }}</h2>
+						<a href="{{ v['link'] }}">{{ v['link'] }}</a>
+						<p class="sid">{{ v['sid'] }}</p>
+						<ul class="eps">
+							{% for show in v['new_eps'] %}
+								<li>{{ show }}</li>
+							{% end %}
+						</ul>
+					{% end %}
+				</div>
+			</div>
 		</div>
 
 	</body>

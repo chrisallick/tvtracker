@@ -9,7 +9,7 @@ addShow = function( show ) {
 		},
 		success: function(data) {
 			$("#loading-gif").css("display", "none");
-			console.log( data );
+			location.reload();
 		}	
 	});
 }
