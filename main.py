@@ -20,16 +20,42 @@ from tornado.options import define, options
 
 define("port", default=8888, help="run on the given port", type=int)
 
-shows = {
-            'test show 2011': {
-                'title': 'Test Show',
-                'last_checked': date(2011, 12, 19).isoformat(),
-                'link': '',
-                'sid': '',
-                'key': '',
-                'new_eps': list()
-            }
-        }
+"""
+    tvtracker:
+        display shows:
+            show:
+                name
+                link to tvrage
+                episodes:
+                    number
+                    link to download nzb
+        search for show:
+            : name + season + show num
+            -> enter show name
+            <- show search results
+        add show:
+            -> select last seen episode
+            add show to database and mem
+        delete show:
+            <- click delete
+            remove from database and mem
+        update show:
+            look for new eps
+            update show in mem and database
+"""
+
+# shows = {
+#             'test show 2011': {
+#                 'title': 'Test Show',
+#                 'last_checked': date(2012, 1, 1).isoformat(),
+#                 'link': '',
+#                 'sid': '',
+#                 'key': '',
+#                 'last_viewed': '',
+#                 'new_eps': list()
+#             }
+#         }
+shows = {}
 account = {}
 
 #search: query, category, maxresults, username, apikey
@@ -63,7 +89,8 @@ class Application(tornado.web.Application):
             (r"/", MainHandler),
             (r"/search", SearchHandler),
             (r"/add", AddHandler),
-            (r"/getnzb", GetNZBHandler)
+            (r"/getnzb", GetNZBHandler),
+            (r"/update", UpdateHandler)
         ]
         settings = dict(
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
@@ -88,19 +115,34 @@ class GetNZBHandler(tornado.web.RequestHandler):
                 if "NZBID" in info:
                     nzbid = info[1]
                     url = base_download_url + nzbid + "&username=" + account['username'] + "&apikey=" + account['apikey']
+                    print url
                     f = open( "blah.nzb", 'w').write(urllib2.urlopen( url ).read() )
                     break
+            self.write(json.dumps({'success':'show updated'}))
+        else:
+            self.write(json.dumps({'error':'error updating show'}))
 
 ##########   /*     */   ##########
 
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
+        global shows
+        c = pymongo.Connection('localhost')
+        db = c.shows
+        tvt = TVTracker()
+        for k,v in shows.iteritems():
+            show = db.shows.find_one({'title':v['title']})
+            data = tvt.create(v['title'], v['last_viewed'] )
+            shows[k] = data
+            show.update(data)
+            db.shows.save(show)
         self.render( "index.html", shows=shows )
 
 class AddHandler(tornado.web.RequestHandler):
     def post(self):
         show = self.get_argument( "show", None )
+        last_viewed = self.get_argument( "last-viewed", "" )
         if show:
             global shows
             if show not in shows:
@@ -108,7 +150,7 @@ class AddHandler(tornado.web.RequestHandler):
                 db = c.shows
 
                 tvt = TVTracker()
-                data = tvt.create(show)
+                data = tvt.create(show, last_viewed)
                 shows[show] = data
                 
                 db.shows.insert( data, manipulate=False )
@@ -133,6 +175,21 @@ class SearchHandler(tornado.web.RequestHandler):
             self.write( json.dumps(result) )
         else:
             self.render( "search.html" )
+
+class UpdateHandler(tornado.web.RequestHandler):
+    def post(self):
+        query = self.get_argument( "query", None )
+
+        if query:
+            global shows
+            show[query]["last_viewed"] = ""
+            #update database
+            self.write(json.dumps({'success':'show updated'}))
+        else:
+            self.write(json.dumps({'error':'error updating show'}))
+
+# class DeleteHandler(tornado.web.RequestHandler):
+#     def get(self):
 
 
 ##########   /*     */   ##########

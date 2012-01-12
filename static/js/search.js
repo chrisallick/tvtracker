@@ -1,8 +1,25 @@
-addShow = function( show ) {
+addShow = function( show, last_viewed ) {
 	$.ajax({
 		url: "/add",
 		type: "POST",
-		data: { 'show': show },
+		data: { 'show': show, 'last-viewed': last_viewed },
+		dataType: 'json',
+		beforeSend: function(data) {
+			$("#loading-gif").css("display", "inline");
+		},
+		success: function(data) {
+			$("#loading-gif").css("display", "none");
+			location.reload();
+		}	
+	});
+}
+
+//increase last viewed
+updateShow = function() {
+	$.ajax({
+		url: "/update",
+		type: "POST",
+		data: { 'show': show, 'last-viewed': last_viewed },
 		dataType: 'json',
 		beforeSend: function(data) {
 			$("#loading-gif").css("display", "inline");
@@ -28,10 +45,9 @@ submitTopic = function( query ) {
 			if( data.title ) {
 				$("#title").text( data.title );
 				$("#link").text( data.link ).attr("href", data.link);
-				$("#search-show").append("<a id='add-show' href='#'>add show</a>");
 				$("#add-show").click( function(event){
 					event.preventDefault();
-					addShow( $("#query").val() );
+					addShow( $("#query").val(), $("#last-viewed").val() );
 				})
 				$("#result").slideDown();
 			}

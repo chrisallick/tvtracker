@@ -20,23 +20,30 @@
 			<div id="search">
 				<form id="search-show">
 					<input id="query" type="text" value="enter query" />
-					<a id="submit" href="#">submit query</a>
+					<a type="submit" id="submit" href="#">submit query</a>
+					<img id="loading-gif" src="/static/img/loading.gif" />
 					<div id="result">
 						<h2 id="title"></h2>
 						<a id="link" href="#" target="_blank" ></a>
+						<div>
+							last viewed: <input id="last-viewed" />
+						</div>
+						<a id="add-show" href="#">add show</a>
 					</div>
 				</form>
-				<img id="loading-gif" src="/static/img/loading.gif" />
 			</div>
 			<div id="shows">
 				<div class="show">
 					{% for k,v in shows.items() %}
 						<h2 class="title">{{ v['title'] }}</h2>
 						<a href="{{ v['link'] }}">{{ v['link'] }}</a>
-						<p class="sid">{{ v['sid'] }}</p>
+						<p class="last-viewed">last viewed: {{ v['last_viewed'] }}</p>
+						<p>latest episode:</p>
 						<ul class="eps">
 							{% for show in v['new_eps'] %}
-								<li>{{ show }}</li>
+								{% if "link" in show %}
+									<li><a class={{ show['new_or_old'] }} href="{{ show['link'] }}">download {{ v['latest'] }}</a></li>
+								{% end %}
 							{% end %}
 						</ul>
 					{% end %}
